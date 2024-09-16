@@ -26,8 +26,12 @@
 
                         <div class="mb-4">
                             <label for="role" class="block text-gray-700 font-bold mb-2">Role</label>
-                            <input type="text" name="role" id="role" placeholder="Enter role"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <select name="role" id="">
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                                <option value="editor">Editor</option>
+                            </select>
+
                         </div>
 
                         <div class="mb-4">

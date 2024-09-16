@@ -31,12 +31,12 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'string|max:255|unique:categories',
+
         ]);
 
         Category::create($validated);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('message', 'Category created successfully');
     }
 
     /**
@@ -53,8 +53,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $categories  = Category::find($id);
-        return view('categories.edit', compact('categories'));
+        $category  = Category::find($id);
+        return view('categories.edit', compact('category'));
     }
 
     /**
@@ -64,12 +64,12 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:categories',
+
         ]);
 
         Category::find($id)->update($validated);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('message', 'Category update successful');
     }
 
     /**

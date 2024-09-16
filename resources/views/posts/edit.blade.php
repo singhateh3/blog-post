@@ -55,7 +55,7 @@
                         <div class="flex items-center justify-between">
                             <button type="submit"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Update Post
+                                <a href="{{ route('posts.update', $post->id) }}">Update Post</a>
                             </button>
                         </div>
                     </form>

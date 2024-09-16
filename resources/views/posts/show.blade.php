@@ -41,6 +41,15 @@
                             <img src="{{ asset('storage/' . $post->image) }}" alt="Post Image"
                                 class="mt-4 w-full h-auto object-cover">
                         @endif
+                        <div class="bg-gray-100 p-4 rounded-lg shadow-md">
+                            <div class="text-gray-700 text-sm font-semibold">
+                                <p>Created at: <span
+                                        class="text-gray-900">{{ $post->created_at->format('F d, Y h:i A') }}</span></p>
+                                <p>Updated at: <span
+                                        class="text-gray-900">{{ $post->updated_at->format('F d, Y h:i A') }}</span></p>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="mt-6">

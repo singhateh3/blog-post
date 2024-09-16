@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\postStoreRequest;
+use App\Http\Requests\postUpdateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -23,24 +25,33 @@ class PostController extends Controller
         return view('posts.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(postStoreRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        // Check if the request contains a file named 'image'
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            // Generate a unique file name with time and original extension
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Store the file in the public/uploads directory
+            $path = $file->storeAs('uploads', $filename, 'public');
+
+            // Add the file path to the validated data
+            $validated = $request->validated();
+            $validated['image'] = $path;
+        } else {
+            $validated = $request->validated();
+        }
+
+        // Add the user_id to the validated data
         $validated['user_id'] = auth()->id();
 
+        // Create the post with the validated data
+        Post::create($validated);
 
-
-        $post = Post::create($validated);
-
-
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('message', 'Post created successfully');
     }
-
     public function show($id)
     {
         $post = Post::find($id);
@@ -54,20 +65,14 @@ class PostController extends Controller
         return view('posts.edit', compact('post', 'categories'));
     }
 
-    public function update(Request $request, $post)
+    public function update(PostUpdateRequest $request, $id)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category_id' => 'nullable|exists:categories,id',
-        ]);
-
-
-        Post::find($post)->update($validated);
-
-        return redirect()->route('posts.index');
+        $validated = $request->validated();
+        Post::find($id)->update($validated);
+        return redirect()->route('posts.index')->with('message', 'Post update Successful');
     }
+
+
 
     public function destroy($id)
     {

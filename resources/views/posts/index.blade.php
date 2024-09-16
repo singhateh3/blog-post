@@ -7,7 +7,11 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            @if (session('message'))
+                <div class="alert alert-message bg-green-500 text-white font-semibold text-center py-2 px-4 rounded m-1">
+                    {{ session('message') }}</div>
+            @endif
+            <div class=" bg-white overflow-hidden shadow-sm sm:rounded-lg ">
                 <div class="p-6 text-gray-900">
                     <div class="mb-4 flex justify-end">
                         <a href="{{ route('posts.create') }}"
@@ -23,9 +27,15 @@
                             <thead>
                                 <tr>
                                     <th class="py-2 px-4 border-b-2 border-gray-300 text-left leading-tight">Title</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-300 text-left leading-tight">Author
+                                    </th>
                                     <th class="py-2 px-4 border-b-2 border-gray-300 text-left leading-tight">Category
                                     </th>
-                                    <th class="py-2 px-4 border-b-2 border-gray-300 text-right leading-tight">Actions
+                                    <th class="py-2 px-4 border-b-2 border-gray-300 text-left leading-tight">created at
+                                    </th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-300 text-left leading-tight">Updated at
+                                    </th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center leading-tight">Actions
                                     </th>
                                 </tr>
                             </thead>
@@ -33,9 +43,15 @@
                                 @foreach ($posts as $post)
                                     <tr>
                                         <td class="py-2 px-4 border-b border-gray-300">{{ $post->title }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-300">{{ $post->user->name }}</td>
+
                                         <td class="py-2 px-4 border-b border-gray-300">
                                             {{ $post->category ? $post->category->name : 'Uncategorized' }}</td>
-                                        <td class="py-2 px-4 border-b border-gray-300 text-right">
+                                        <td class="py-2 px-4 border-b border-gray-300">
+                                            {{ $post->created_at }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-300">
+                                            {{ $post->created_at }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-300 text-left 0px">
                                             <div class="flex justify-end space-x-1">
                                                 <a href="{{ route('posts.show', $post->id) }}"
                                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline">

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\userstoreRequest;
+use App\Http\Requests\userUpdateRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -21,17 +24,12 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(Request $request)
+    public function store(userstoreRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'role' => 'required',
-            'password' => 'required'
-        ]);
+        $validated = $request->validated();
 
-        User::create(array_merge(Arr::except([$validated, 'password'], ['password' => Hash::make($request->password)])));
-        return redirect()->route('users.index');
+        User::create(array_merge(Arr::except($validated, ['password']), ['password' => Hash::make($request->password)]));
+        return redirect()->route('users.index')->with('message', 'User created successfully');
     }
 
     public function show($id)
@@ -46,20 +44,24 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'role' => 'required',
-            'password' => 'required'
-        ]);
-        User::find($id)->update(array_merge(Arr::except(
-            [$validated, 'password'],
-            ['password' => Hash::make($request->password)]
-        )));
-        return redirect()->route('users.index');
+
+        $validated = $request->validated();
+
+
+        $user = User::findOrFail($id);
+
+
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
+        }
+        $user->update($validated);
+        return redirect()->route('users.index')->with('message', 'User updated successfully');
     }
+
     public function destroy($id)
     {
         User::find($id)->delete();
